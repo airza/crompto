@@ -1,7 +1,5 @@
 import englishSample from "./english.txt"
 import dutchSample from "./dutch.txt"
-import cipherText from "./cipher.txt"
-import cipherText2 from "./cipher2.txt"
 type Frequencies = [string,number][];
 function decryptCaesar(ciphertext: string, rotation: number): string {
     const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -16,7 +14,7 @@ function decryptCaesar(ciphertext: string, rotation: number): string {
     }
     return decrypted;
 }
-function encryptCaesar(ciphertext:string,rotation:number):string{
+export function encryptCaesar(ciphertext:string, rotation:number):string{
     return decryptCaesar(ciphertext,-rotation);
 }
 function frequencyAnalysis(text: string): Frequencies {
@@ -91,7 +89,7 @@ export function decryptByFrequency(ciphertext: string, language:"dutch"|"english
 
     return decryptCaesar(ciphertext, bestRotation);
 }
-function isDutchOrEnglish(text:string,dutchReference:string=dutchSample,englishReference:string=englishSample):"dutch"|"english" {
+export function isDutchOrEnglish(text:string, dutchReference:string=dutchSample, englishReference:string=englishSample):"dutch"|"english" {
     let dutchFrequencies = sortByFrequency(frequencyAnalysis(dutchReference));
     let englishFrequencies = sortByFrequency(frequencyAnalysis(englishReference));
     let textFrequencies = sortByFrequency(frequencyAnalysis(text));
@@ -104,9 +102,3 @@ function isDutchOrEnglish(text:string,dutchReference:string=dutchSample,englishR
     }
 }
 // Example
-console.log(decryptByFrequency(cipherText, englishSample));
-console.log(decryptByFrequency(cipherText2, dutchSample));
-console.log(isDutchOrEnglish(cipherText))
-console.log(isDutchOrEnglish(cipherText2))
-console.log(isDutchOrEnglish("Hallo, ik ben een Nederlander."));
-console.log(isDutchOrEnglish("Hello, I am an Englishman."));
