@@ -32,3 +32,4 @@ test("decrypt by frequency works good",()=>{
     expect(decryptByFrequency(cipherText,"english").slice(0,10)).toEqual("ITHINKANDM");
     expect(decryptByFrequency(cipherText2,"dutch").slice(0,10)).toEqual("WIJMOETENM");
 });
+console.log(decryptByFrequency(cipherText,"english"))

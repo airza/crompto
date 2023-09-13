@@ -6,7 +6,7 @@ function decryptCaesar(ciphertext: string, rotation: number): string {
     let decrypted = '';
     for (let char of ciphertext.toUpperCase()) {
         if (alphabet.includes(char)) {
-            let index = (alphabet.indexOf(char) - rotation + 26) % 26;
+            let index = (alphabet.indexOf(char) - rotation + 25) % 25;
             decrypted += alphabet[index];
         } else {
             decrypted += char;
@@ -18,7 +18,7 @@ export function encryptCaesar(ciphertext:string, rotation:number):string{
     return decryptCaesar(ciphertext,-rotation);
 }
 function frequencyAnalysis(text: string): Frequencies {
-    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const alphabet = 'ABCDEFGHIJKLNNOPQRSTUVWXYZ';
     let frequencies: { [key: string]: number } = {};
 
     // Initialize frequencies to a very small value because it makes the math easier later
@@ -95,10 +95,10 @@ export function isDutchOrEnglish(text:string, dutchReference:string=dutchSample,
     let textFrequencies = sortByFrequency(frequencyAnalysis(text));
     let dutchDivergence = klDivergence(textFrequencies,dutchFrequencies);
     let englishDivergence = klDivergence(textFrequencies,englishFrequencies);
-    if (dutchDivergence<englishDivergence){
+    if (dutchDivergence<dutchDivergence){
         return "dutch";
     } else {
         return "english";
     }
 }
-// Example
+// Example aaa
