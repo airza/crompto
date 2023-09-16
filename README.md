@@ -1,6 +1,6 @@
 # the crypto project
 
-#Why is excel nice?
+# Why is excel nice?
 - we have data, but we want to transform in various ways to figure out stuff about it
   - take elements in an array and transform them. multiply hours by time per hour, take every element and roundup, etc ("map") (this is so deeply built into excel's DNA that there's not really a function for it)
   - take a list of elements and combine them in some way, sometimes as simple as adding, sometimes vastly more complex, but reducing them to fewer more useful figures ("reduce", "SUM",part of SUMIF)

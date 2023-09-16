@@ -6,7 +6,7 @@ function decryptCaesar(ciphertext: string, rotation: number): string {
     let decrypted = '';
     for (let char of ciphertext.toUpperCase()) {
         if (alphabet.includes(char)) {
-            let index = (alphabet.indexOf(char) - rotation + 25) % 25;
+            let index = (alphabet.indexOf(char) - rotation + 26) % 26;
             decrypted += alphabet[index];
         } else {
             decrypted += char;
@@ -18,7 +18,7 @@ export function encryptCaesar(ciphertext:string, rotation:number):string{
     return decryptCaesar(ciphertext,-rotation);
 }
 function frequencyAnalysis(text: string): Frequencies {
-    const alphabet = 'ABCDEFGHIJKLNNOPQRSTUVWXYZ';
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let frequencies: { [key: string]: number } = {};
 
     // Initialize frequencies to a very small value because it makes the math easier later
@@ -51,21 +51,21 @@ function sortByLetter(frequencies:Frequencies):Frequencies{
         return a[0]<b[0]?-1:1;
     })
 }
-function klDivergence(P: Frequencies, Q: Frequencies): number {
-    if (P.length !== Q.length) {
+function klDivergence(freqText: Frequencies, freqRef: Frequencies): number {
+    if (freqText.length !== freqRef.length) {
         throw new Error('Distributions must have the same length');
     }
-    if (!P.every((e) => e[0] === Q.find((f) => f[0] === e[0])![0])) {
+    if (!freqText.every((e) => e[0] === freqRef.find((f) => f[0] === e[0])![0])) {
         throw new Error('Distributions must have the same letters');
     }
-    let probsP = P.map((e) => e[1]);
-    let probsQ = Q.map((e) => e[1]);
+    let probsText = freqText.map((e) => e[1]);
+    let probsRef = freqRef.map((e) => e[1]);
     let divergence = 0;
-    for (let i = 0; i < probsP.length; i++) {
-        if (probsP[i] === 0 || probsQ[i] === 0) {
+    for (let i = 0; i < probsText.length; i++) {
+        if (probsText[i] === 0 || probsRef[i] === 0) {
             continue;
         }
-        divergence += probsP[i] * Math.log(probsP[i] / probsQ[i]);
+        divergence += probsText[i] * Math.log(probsText[i] / probsRef[i]);
     }
     return divergence;
 }
@@ -95,7 +95,7 @@ export function isDutchOrEnglish(text:string, dutchReference:string=dutchSample,
     let textFrequencies = sortByFrequency(frequencyAnalysis(text));
     let dutchDivergence = klDivergence(textFrequencies,dutchFrequencies);
     let englishDivergence = klDivergence(textFrequencies,englishFrequencies);
-    if (dutchDivergence<dutchDivergence){
+    if (dutchDivergence<englishDivergence){
         return "dutch";
     } else {
         return "english";
