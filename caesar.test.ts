@@ -1,15 +1,16 @@
 import { expect, test } from "bun:test";
-import cipherText from "./cipher.txt";
-import cipherText2 from "./cipher2.txt";
-import longEnglish from "./longEnglish.txt";
-import longDutch from "./longDutch.txt";
+import cipherText from "./ciphertexts/cipher.txt";
+import cipherText2 from "./ciphertexts/cipher2.txt";
+import english from "./references/english.txt";
+import dutch from "./references/dutch.txt";
 import {encryptCaesar,decryptByFrequency,isDutchOrEnglish} from "./caesar.ts";
 console.log("----------------------------------------------------")
+debugger;
 test("english detection works?",()=>{
-    expect(isDutchOrEnglish(longEnglish)).toEqual("english");
+    expect(isDutchOrEnglish(english)).toEqual("english");
 });
 test("dutch detection works?",()=>{
-    expect(isDutchOrEnglish(longDutch)).toEqual("dutch");
+    expect(isDutchOrEnglish(dutch)).toEqual("dutch");
 });
 test("ceasar cipher works?",()=>{
     //this should be plenty of tests
@@ -19,13 +20,13 @@ test("ceasar cipher works?",()=>{
 });
 test("english detection still works on encrypted ciphertexts?",()=>{
     for (let i = 1; i < 26; i++) {
-        let encryptedText = encryptCaesar(longEnglish,i);
+        let encryptedText = encryptCaesar(english,i);
         expect(isDutchOrEnglish(encryptedText)).toEqual("english");
     }
 });
 test("dutch detection still works on encrypted ciphertexts?",()=> {
     for (let i = 1; i < 26; i++) {
-        let encryptedText = encryptCaesar(longDutch, i);
+        let encryptedText = encryptCaesar(dutch, i);
         expect(isDutchOrEnglish(encryptedText)).toEqual("dutch");
     }
 })
