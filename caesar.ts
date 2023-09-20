@@ -96,9 +96,9 @@ export function decryptByFrequency(ciphertext: string, language:"dutch"|"english
     return decryptCaesar(ciphertext, bestRotation);
 }
 export function isDutchOrEnglish(text:string, dutchReference:string=dutchSample, englishReference:string=englishSample):"dutch"|"english" {
-    let dutchFrequencies = sortByFrequency(frequencyAnalysis(dutchReference));
-    let englishFrequencies = sortByFrequency(frequencyAnalysis(englishReference));
-    let textFrequencies = sortByFrequency(frequencyAnalysis(text));
+    let dutchFrequencies = sortByLetter(frequencyAnalysis(dutchReference));
+    let englishFrequencies = sortByLetter(frequencyAnalysis(englishReference));
+    let textFrequencies = sortByLetter(frequencyAnalysis(text));
     let dutchDivergence = klDivergence(textFrequencies,dutchFrequencies);
     let englishDivergence = klDivergence(textFrequencies,englishFrequencies);
     if (dutchDivergence<englishDivergence){
