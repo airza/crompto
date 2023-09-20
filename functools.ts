@@ -12,7 +12,8 @@ function go() {
     letters[0] = "a";
 // what is the value of 'letters'?
 
-    let coolString = "weppis"
+    let coolString = "weppis";
+    let coolString2 = "beppis";
     let weppis = coolString
     coolString += "!"
 // what is weppis?
