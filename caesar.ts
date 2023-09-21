@@ -1,6 +1,7 @@
 import englishSample from "./references/longEnglish.txt"
 import dutchSample from "./references/longDutch.txt"
 export type Frequencies = [string,number][];
+//define decryptCaesar
 function decryptCaesar(ciphertext: string, rotation: number): string {
     const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let decrypted = '';
@@ -17,20 +18,42 @@ function decryptCaesar(ciphertext: string, rotation: number): string {
     }
     return decrypted;
 }
+//define encryptCaesar
 export function encryptCaesar(ciphertext:string, rotation:number):string{
     return decryptCaesar(ciphertext,-rotation);
 }
+//define frequencyAnalysis
 export function frequencyAnalysis(text: string): Frequencies {
     const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let frequencies: { [key: string]: number } = {};
 
     // Initialize frequencies to a very small value because it makes the math easier later
+    //HOW DOES THE FOLLOWING BOI WORK?
     for (let letter of alphabet) {
         frequencies[letter] = 1e-10;
     }
-
-    let count = 0;
+    //CHANGING SHIT AROUND: split, map, filter, reduce
+    //ALL OF THIS STILL PART OF frequencyAnalysis?
+    debugger;
+    //split
+    let textArray:string[] = text.split("")
+    //map
+    function makeUppercase(e:string):string{
+    return e.toUpperCase()
+    }
+    let allUppercase:string[] = textArray.map(makeUppercase)
+    //filter
+    function isGoodletter(e:string):boolean {
+        return alphabet.includes(e)
+    }
+    let onlyGoodLetters:string[] = allUppercase.filter(isGoodletter)
     //reduce
+    //REMIND ME WHAT WE WANNA ACHIEVE HERE
+    function reducer(acc:{ [key: string]: number },val:string):{ [key: string]: number }{
+
+    } //STOP CHANGING SHIT AROUND
+//garbage which we're replacing
+    let count = 0
     for (let char of text.toUpperCase()) {
         if (frequencies[char] !== undefined && alphabet.includes(char)){
             frequencies[char]++;
@@ -43,8 +66,9 @@ export function frequencyAnalysis(text: string): Frequencies {
     }
     //convert to array
     return Object.entries(frequencies);
-}
-
+} //stop define frequencyAnalysis
+//stop garbage
+//define sortByFrequency, sortByLetter, klDivergence
 function sortByFrequency(frequencies:Frequencies):Frequencies{
     return frequencies.sort((a,b)=>{
         return b[1]-a[1];
@@ -75,7 +99,7 @@ function klDivergence(freqText: Frequencies, freqRef: Frequencies): number {
     }
     return divergence;
 }
-
+//define decryptByFrequency
 export function decryptByFrequency(ciphertext: string, language:"dutch"|"english"): string {
     const referenceText:string = language==="dutch"?dutchSample:englishSample;
     const refFrequencies = sortByLetter(frequencyAnalysis(referenceText));
@@ -95,6 +119,7 @@ export function decryptByFrequency(ciphertext: string, language:"dutch"|"english
 
     return decryptCaesar(ciphertext, bestRotation);
 }
+//define isDutchOrEnglish
 export function isDutchOrEnglish(text:string, dutchReference:string=dutchSample, englishReference:string=englishSample):"dutch"|"english" {
     let dutchFrequencies = sortByLetter(frequencyAnalysis(dutchReference));
     let englishFrequencies = sortByLetter(frequencyAnalysis(englishReference));
@@ -107,4 +132,3 @@ export function isDutchOrEnglish(text:string, dutchReference:string=dutchSample,
         return "english";
     }
 }
-// Example aaa
