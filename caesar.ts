@@ -131,9 +131,9 @@ export function isDutchOrEnglish(text:string, dutchReference:string=dutchSample,
     let dutchFrequencies = sortByLetter(frequencyAnalysis(dutchReference));
     let englishFrequencies = sortByLetter(frequencyAnalysis(englishReference));
     let textFrequencies = sortByLetter(frequencyAnalysis(text));
-    let dutchDivergence = klDivergence(textFrequencies,dutchFrequencies);
-    let englishDivergence = klDivergence(textFrequencies,englishFrequencies);
-    if (dutchDivergence<englishDivergence){
+    let dutchDivergence = klDivergence(textFrequencies, dutchFrequencies);
+    let englishDivergence = klDivergence(textFrequencies, englishFrequencies);
+    if (dutchDivergence < englishDivergence) {
         return "dutch";
     } else {
         return "english";
