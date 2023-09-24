@@ -16,3 +16,29 @@ Our goal is to choose one that is the least likely to be subtly broken:
 - DRY: Don't repeat yourself: pasting the same line of code repeatedly makes it harder to modify
 - KISS: "keep it simple, stupid"
 - Performance: not as big of a deal these days, but sometimes a big deal
+- Keep messy state inside of functions, so we can reason about it only in an emergency
+#### Hands-on
+rewrite functions above
+#### What to do?
+- We currently have `isDutchOrEnglish`, a function that (due to our changes) only works on unencrypted language
+- Should we make changes?
+- What is the *purpose* of this code?
+    - need to choose how to decrypt a given rotated ciphertext
+    - what functions would we need to carry this out?
+- Decompose this task into steps we can individually carry out here
+    - can either write this out or write some functions that would do the trick
+#### The Vigenère cipher
+- extension of the caesar cipher
+- uses a secret code word
+- code word converted to letters (ABBA -> 0,1,1,0) 
+- used like a caesar cipher on each letter
+```
+SPHINX OF BLACK QUARTZ, JUDGE MY VOW
+
+SPHINXOFBLACKQUARTZJUDGEMYVOW
+ABBAABBAABBAABBAABBAABBAABBAA
+SQIINYPFBMBCKRVARUAJUEHEMZWOW
+```
+- given a very long ciphertext, how would we attack this?
+- how could we determine the length of a key?
+- determine length of key, 
