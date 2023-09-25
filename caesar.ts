@@ -1,6 +1,7 @@
 import englishSample from "./references/longEnglish.txt"
 import dutchSample from "./references/longDutch.txt"
 import {filter} from "lodash";
+import {numberOfDFGCompiles} from "bun:jsc";
 export type Frequencies = [string,number][];
 //define decryptCaesar
 function decryptCaesar(ciphertext: string, rotation: number): string {
@@ -34,8 +35,7 @@ export function frequencyAnalysis(text: string): Frequencies {
     for (let letter of alphabet){
         frequencies[letter] = 1e-10;
     }
-    // todo CHANGING SHIT AROUND: split, map, filter, reduce
-    //ALL OF THIS STILL PART OF frequencyAnalysis?
+    // todid CHANGING SHIT AROUND: split, map, filter, reduce
     //split
     let textArray:string[] = text.split("")
     //map
@@ -50,25 +50,22 @@ export function frequencyAnalysis(text: string): Frequencies {
     let onlyGoodLetters:string[] = allUppercase.filter(isGoodLetter)
     //we have a list with all the letters in our frequency table,
     // now we just need to go through the object we are using to hold them and make it match up, so something like:
-    // {A:1000,B:500,C:400,D:400,E:2000} except with all the letters
+    type FrequencyTable = {
+        [key:string]:number
+    }
+    let letterFrequencies:FrequencyTable = onlyGoodLetters.reduce((currentTable:FrequencyTable,letter:string):FrequencyTable=>{
+        currentTable[letter]++
+        return currentTable
+    }
+    ,frequencies);
     //now we need to turn this into a probability distribution
-    //change this
-    let count = 0;
+    debugger;
+    let freqArray = Object.entries(letterFrequencies)
+    let textLength:number = onlyGoodLetters.length
+    return freqArray.map(e=>{
+        return [e[0], e[1]/textLength]
+    })
     //foreach is like map except instead of returning stuff it doesn't return stuff lol
-//garbage which we're replacing
-    for (let char of text.toUpperCase()) {
-        if (frequencies[char] !== undefined && alphabet.includes(char)){
-            frequencies[char]++;
-            count++;
-        }
-    }
-
-    for (let letter of alphabet) {
-        frequencies[letter] /= count;
-    }
-    //end garbage
-    return Object.entries(frequencies);
-    //convert to array
 } //stop define frequencyAnalysis
 //define sortByFrequency, sortByLetter, klDivergence
 function sortByFrequency(frequencies:Frequencies):Frequencies{
@@ -95,7 +92,7 @@ function klDivergence(freqText: Frequencies, freqRef: Frequencies): number {
     let probsRef = freqRef.map((e) => e[1]);
     let zipped = probsText.map((e, i) => [e, probsRef[i]]);
     let divergence = 0;
-    // todo filter, then reduce
+    // todid filter, then reduce
     const filterZipped = zipped.filter((el)=>{
        return el[0]!==0 || el[1]!==0 ;
     })
