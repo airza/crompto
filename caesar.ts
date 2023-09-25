@@ -30,9 +30,12 @@ export function encryptCaesar(ciphertext:string, rotation:number):string{
 export function frequencyAnalysis(text: string): Frequencies {
     const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let frequencies: { [key: string]: number } = {};
+    //set starting frequencies to 0ish for all letters
+    for (let letter of alphabet){
+        frequencies[letter] = 1e-10;
+    }
     // todo CHANGING SHIT AROUND: split, map, filter, reduce
     //ALL OF THIS STILL PART OF frequencyAnalysis?
-    debugger;
     //split
     let textArray:string[] = text.split("")
     //map
@@ -48,18 +51,10 @@ export function frequencyAnalysis(text: string): Frequencies {
     //we have a list with all the letters in our frequency table,
     // now we just need to go through the object we are using to hold them and make it match up, so something like:
     // {A:1000,B:500,C:400,D:400,E:2000} except with all the letters
-    function reducer(acc:{ [key: string]: number },val:string):{ [key: string]: number }{
-        return acc;
-    } //STOP CHANGING SHIT AROUND
-    let allFrequencies = onlyGoodLetters.reduce(reducer,frequencies)
     //now we need to turn this into a probability distribution
     //change this
     let count = 0;
     //foreach is like map except instead of returning stuff it doesn't return stuff lol
-    Object.keys(allFrequencies).forEach((letter:string)=>{
-        allFrequencies[letter]/=count
-    })
-
 //garbage which we're replacing
     for (let char of text.toUpperCase()) {
         if (frequencies[char] !== undefined && alphabet.includes(char)){
@@ -72,12 +67,11 @@ export function frequencyAnalysis(text: string): Frequencies {
         frequencies[letter] /= count;
     }
     //end garbage
-
+    return Object.entries(frequencies);
     //convert to array
-    return Object.entries(allFrequencies);
 } //stop define frequencyAnalysis
 //define sortByFrequency, sortByLetter, klDivergence
-function sortByFreequency(frequencies:Frequencies):Frequencies{
+function sortByFrequency(frequencies:Frequencies):Frequencies{
     return frequencies.sort((a,b)=>{
         return b[1]-a[1];
     })
@@ -91,17 +85,19 @@ function klDivergence(freqText: Frequencies, freqRef: Frequencies): number {
     if (freqText.length !== freqRef.length) {
         throw new Error('Distributions must have the same length');
     }
-    if (!freqText.every((e) => e[0] === freqRef.find((f) => f[0] === e[0])![0])) {
-        throw new Error('Distributions must have the same letters');
+    //
+    let lettersText = freqText.map(e=>e[0]);
+    let lettersRef = freqRef.map(e=>e[0])
+    if (!lettersText.every((el):boolean=>lettersRef.includes(el))) {
+        throw new Error(`Distributions are not identical:${lettersText},${lettersRef}`);
     }
     let probsText = freqText.map((e) => e[1]);
     let probsRef = freqRef.map((e) => e[1]);
     let zipped = probsText.map((e, i) => [e, probsRef[i]]);
     let divergence = 0;
     // todo filter, then reduce
-    debugger;
     const filterZipped = zipped.filter((el)=>{
-       return el[0]===0 || el[1]===0 ;
+       return el[0]!==0 || el[1]!==0 ;
     })
     //[[0.1,0.2],[0.3,0.4],...]
     return filterZipped.reduce((divergence:number,currentValue:number[])=>{
@@ -131,10 +127,16 @@ export function decryptByFrequency(ciphertext: string, language:"dutch"|"english
     return decryptCaesar(ciphertext, bestRotation);
 }
 //define isDutchOrEnglish
-export function isDutchOrEnglish(text:string, dutchReference:string=dutchSample, englishReference:string=englishSample):"dutch"|"english" {
-    let dutchFrequencies = sortByLetter(frequencyAnalysis(dutchReference));
-    let englishFrequencies = sortByLetter(frequencyAnalysis(englishReference));
-    let textFrequencies = sortByLetter(frequencyAnalysis(text));
+export function isDutchOrEnglish(text:string, isEncryptedCiphertext:boolean,dutchReference:string=dutchSample, englishReference:string=englishSample):"dutch"|"english" {
+    let sortingFunction;
+    if (isEncryptedCiphertext){
+        sortingFunction = sortByFrequency
+    } else {
+        sortingFunction = sortByLetter
+    }
+    let dutchFrequencies = sortingFunction(frequencyAnalysis(dutchReference));
+    let englishFrequencies = sortingFunction(frequencyAnalysis(englishReference));
+    let textFrequencies = sortingFunction(frequencyAnalysis(text));
     let dutchDivergence = klDivergence(textFrequencies, dutchFrequencies);
     let englishDivergence = klDivergence(textFrequencies, englishFrequencies);
     if (dutchDivergence < englishDivergence) {

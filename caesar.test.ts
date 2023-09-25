@@ -5,12 +5,11 @@ import english from "./references/english.txt";
 import dutch from "./references/dutch.txt";
 import {encryptCaesar,decryptByFrequency,isDutchOrEnglish} from "./caesar.ts";
 console.log("----------------------------------------------------")
-debugger;
 test("english detection works?",()=>{
-    expect(isDutchOrEnglish(english)).toEqual("english");
+    expect(isDutchOrEnglish(english,false)).toEqual("english");
 });
 test("dutch detection works?",()=>{
-    expect(isDutchOrEnglish(dutch)).toEqual("dutch");
+    expect(isDutchOrEnglish(dutch, false)).toEqual("dutch");
 });
 test("ceasar cipher works?",()=>{
     //this should be plenty of tests
@@ -21,13 +20,14 @@ test("ceasar cipher works?",()=>{
 test("english detection still works on encrypted ciphertexts?",()=>{
     for (let i = 1; i < 26; i++) {
         let encryptedText = encryptCaesar(english,i);
-        expect(isDutchOrEnglish(encryptedText)).toEqual("english");
+        expect(isDutchOrEnglish(encryptedText, true)).toEqual("english");
     }
 });
 test("dutch detection still works on encrypted ciphertexts?",()=> {
+    debugger;
     for (let i = 1; i < 26; i++) {
         let encryptedText = encryptCaesar(dutch, i);
-        expect(isDutchOrEnglish(encryptedText)).toEqual("dutch");
+        expect(isDutchOrEnglish(encryptedText, true)).toEqual("dutch");
     }
 })
 test("decrypt by frequency works?",()=>{
