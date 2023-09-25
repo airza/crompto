@@ -1,5 +1,6 @@
 import englishSample from "./references/longEnglish.txt"
 import dutchSample from "./references/longDutch.txt"
+import {filter} from "lodash";
 export type Frequencies = [string,number][];
 //define decryptCaesar
 function decryptCaesar(ciphertext: string, rotation: number): string {
@@ -53,7 +54,7 @@ export function frequencyAnalysis(text: string): Frequencies {
     let allFrequencies = onlyGoodLetters.reduce(reducer,frequencies)
     //now we need to turn this into a probability distribution
     //change this
-    const count = 0;
+    let count = 0;
     //foreach is like map except instead of returning stuff it doesn't return stuff lol
     Object.keys(allFrequencies).forEach((letter:string)=>{
         allFrequencies[letter]/=count
@@ -98,13 +99,16 @@ function klDivergence(freqText: Frequencies, freqRef: Frequencies): number {
     let zipped = probsText.map((e, i) => [e, probsRef[i]]);
     let divergence = 0;
     // todo filter, then reduce
-    for (let i = 0; i < probsText.length; i++) {
-        if (probsText[i] === 0 || probsRef[i] === 0) {
-            continue;
-        }
-        divergence += probsText[i] * Math.log(probsText[i] / probsRef[i]);
-    }
-    return divergence;
+    debugger;
+    const filterZipped = zipped.filter((el)=>{
+       return el[0]===0 || el[1]===0 ;
+    })
+    //[[0.1,0.2],[0.3,0.4],...]
+    return filterZipped.reduce((divergence:number,currentValue:number[])=>{
+        let textProb = currentValue[0];
+        let refProb = currentValue[1];
+       return divergence + textProb * Math.log(textProb/refProb);
+    },0);
 }
 //define decryptByFrequency
 export function decryptByFrequency(ciphertext: string, language:"dutch"|"english"): string {
