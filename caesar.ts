@@ -4,24 +4,22 @@ import {filter} from "lodash";
 import {numberOfDFGCompiles} from "bun:jsc";
 export type Frequencies = [string,number][];
 //define decryptCaesar
+//REDO START
 function decryptCaesar(ciphertext: string, rotation: number): string {
     const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    let decrypted = '';
+    // TODID
     // string -> characters[]
-    // TODO map the characters - apply the transformation to each element or just skip it
-    let ciphertextArray:string[];
-    let decryptedTextArray:string[]
-    // characters[] -> string
-    // adapt this code
-    for (let char of ciphertext.toUpperCase()) {
-        if (alphabet.includes(char)) {
-            let index = (alphabet.indexOf(char) - rotation + 26) % 26;
-            decrypted += alphabet[index];
+    let arrayBlegh:string[] = ciphertext.toUpperCase().split("")
+    // TODID map the characters - apply the transformation to each element or just skip it
+    let transformed = arrayBlegh.map(e=>{
+        debugger;
+        if (alphabet.includes(e)){
+            return alphabet[(alphabet.indexOf(e) - rotation + alphabet.length) % alphabet.length]
         } else {
-            decrypted += char;
+            return e
         }
-    }
-    return decrypted;
+    })
+    return transformed.join("")
 }
 //define encryptCaesar
 export function encryptCaesar(ciphertext:string, rotation:number):string{
@@ -59,7 +57,6 @@ export function frequencyAnalysis(text: string): Frequencies {
     }
     ,frequencies);
     //now we need to turn this into a probability distribution
-    debugger;
     let freqArray = Object.entries(letterFrequencies)
     let textLength:number = onlyGoodLetters.length
     return freqArray.map(e=>{
