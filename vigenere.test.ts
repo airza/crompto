@@ -8,10 +8,13 @@ import {indexCodeword} from "./vigenere.ts"
 console.log("----------------------------------------------------")
 
 test("Indexing codeword works", ()=>{
-    expect(indexCodeword(parameter1, parameter2)).toEqual(outcome)
+    expect(indexCodeword(0, "NOP")).toEqual(0)
+    expect(indexCodeword(2, "NOP")).toEqual(2)
+    expect(indexCodeword(4, "NOP")).toEqual(1)
+    expect(indexCodeword(0, "KILLME")).toEqual(0)
+    expect(indexCodeword(2, "KILLME")).toEqual(2)
+    expect(indexCodeword(6, "KILLME")).toEqual(0)
 })
-
-//expect(isDutchOrEnglish(dutch, false)).toEqual("dutch");
 
 test("Encrypting works",()=> {
 
