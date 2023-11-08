@@ -1,35 +1,36 @@
 import {encryptCaesar} from "./caesar";
 
-const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-export function indexCodeword(textPosition:number, codeword:string): number {
-    let codewordIndex:number = textPosition % codeword.length
-    return codewordIndex
-}
-
-export function rotatingLetters(text:string, codewordRotations:number[]): string{
-    let textArray:string[] = text.toUpperCase().split("")
-        .filter((e)=>{
-            return alphabet.includes(e)
-        })
-    let outputText:string[] = textArray.map((e, index) =>{
-        let allRotations = codewordRotations[index % codewordRotations.length]
-        return encryptCaesar(e, allRotations)
-    })
-    return outputText.join("")
-}
+const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 export function encryptVigenere(text:string, codeword:string): string{
-    let codewordArray:string[] = codeword.toUpperCase().split("")
-    let codewordLetters:string[] = codewordIndexes.map((e)=>{
-        return codewordArray[e]
-    })
-    let rotations:number[] = codewordLetters.map((e) =>{
-        return alphabet.indexOf(e)
-    })
-    return rotatingLetters(text, rotations)
+    return rotatingLetters(text, getEncryptRotation(codeword))
 }
 
 export function decryptVigenere(text:string, codeword:string): string{
+    let decryptRotations:number[] = getEncryptRotation(codeword).map((e)=>{
+        return e * -1
+    })
+    return rotatingLetters(text, decryptRotations)
+}
 
+export function getEncryptRotation(codeword:string): number[]{
+    let codewordArray:string[] = codeword.toUpperCase().split("")
+    let codewordLettersOnly:string[] = codewordArray.filter((e)=>{
+        return alphabet.includes(e)
+    })
+    return codewordLettersOnly.map((e)=>{
+        return alphabet.indexOf(e)
+    })
+}
+
+export function rotatingLetters(text:string, rotations:number[]): string{
+    let textArray:string[] = text.toUpperCase().split("")
+    let textLettersOnly:string[] = textArray.filter((e)=>{
+        return alphabet.includes(e)
+    })
+    let outputText:string[] = textLettersOnly.map((e, index) =>{
+        let currentRotation:number = rotations[index % rotations.length]
+        return encryptCaesar(e, currentRotation)
+    })
+    return outputText.join("")
 }
