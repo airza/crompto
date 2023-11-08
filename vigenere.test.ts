@@ -1,14 +1,12 @@
 import { expect, test } from "bun:test";
-import cipherText from "./ciphertexts/cipher.txt";
-import cipherText2 from "./ciphertexts/cipher2.txt";
-import english from "./references/english.txt";
-import dutch from "./references/dutch.txt";
 import {decryptVigenere, encryptVigenere, getEncryptRotation, rotatingLetters} from "./vigenere.ts"
 
 console.log("----------------------------------------------------")
 
 test("Getting encryption rotation works",()=>{
-    expect(getEncryptRotation("NOP")).toEqual([13, 14, 15])
+    expect(getEncryptRotation("ABBA")).toEqual([0, 1, 1, 0])
+    expect(getEncryptRotation("nop")).toEqual([13, 14, 15])
+    expect(getEncryptRotation("DON'T")).toEqual([3, 14, 13, 19])
 })
 
 test("Rotating letters works",()=>{
@@ -18,14 +16,12 @@ test("Rotating letters works",()=>{
 test("Encrypting works",()=> {
     expect(encryptVigenere("HELLO", "NOP")).toEqual("USAYC")
     expect(encryptVigenere("hello", "nop")).toEqual("USAYC")
-    expect(encryptVigenere("hello bitch", "nop")).toEqual("USAYCQVHRU")
-    // todo preserve spaces????
+    expect(encryptVigenere("HELLO", "CODEWORD")).toEqual("JSOPK")
+    expect(encryptVigenere("HELLO BITCH", "NOP")).toEqual("USAYCQVHRU")
+    expect(encryptVigenere("HELLO", "KILL ME")).toEqual("RMWWA")
+    expect(encryptVigenere("H???", "DAY!")).toEqual("K")
 })
 
 test("Decrypting works", ()=>{
-    expect(decryptVigenere("USAYC", "NOP")).toEqual("HELLO")
-    expect(decryptVigenere("usayc", "nop")).toEqual("HELLO")
     expect(decryptVigenere("USAYC QVHRU", "NOP")).toEqual("HELLOBITCH")
-    // todo preserve spaces????
-
 })

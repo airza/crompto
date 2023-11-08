@@ -14,8 +14,7 @@ export function decryptVigenere(text:string, codeword:string): string{
 }
 
 export function getEncryptRotation(codeword:string): number[]{
-    let codewordArray:string[] = codeword.toUpperCase().split("")
-    let codewordLettersOnly:string[] = codewordArray.filter((e)=>{
+    let codewordLettersOnly:string[] = codeword.toUpperCase().split("").filter((e)=>{
         return alphabet.includes(e)
     })
     return codewordLettersOnly.map((e)=>{

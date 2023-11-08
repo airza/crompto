@@ -1,6 +1,5 @@
 import englishSample from "./references/longEnglish.txt"
 import dutchSample from "./references/longDutch.txt"
-import {filter} from "lodash";
 import {numberOfDFGCompiles} from "bun:jsc";
 export type Frequencies = [string,number][];
 //define decryptCaesar
