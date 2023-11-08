@@ -3,7 +3,7 @@ import cipherText from "./ciphertexts/cipher.txt";
 import cipherText2 from "./ciphertexts/cipher2.txt";
 import english from "./references/english.txt";
 import dutch from "./references/dutch.txt";
-import {indexCodeword} from "./vigenere.ts"
+import {encryptVigenere, indexCodeword} from "./vigenere.ts"
 
 console.log("----------------------------------------------------")
 
@@ -17,11 +17,10 @@ test("Indexing codeword works", ()=>{
 })
 
 test("Encrypting works",()=> {
-
+    expect(encryptVigenere("HELLO", "NOP")).toEqual("USAYC")
+    expect(encryptVigenere("HELLO", "NOP")).toEqual("USAYC")
 })
+
 test("Decrypting works", ()=>{
-
-})
-test("????",()=>{
 
 })
