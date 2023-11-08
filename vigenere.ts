@@ -1,36 +1,41 @@
-//METHOD ONE
-    //split code word
-    //for first letter of code word (and then second etc),
-        //get every xth letter from text
-        //caesar rotate
-    //recombine
-
-//METHOD TWO
-    //map plain text to how much to rotate it by
-        //how much do we want to rotate
-    //execute rotation and put back together
-
-/*
-NOP
-SPHINX THING IDK
-012345 67890 123
-012012 01201 201
- */
+import {encryptCaesar} from "./caesar";
 
 export function indexCodeword(textPosition:number, codeword:string): number {
     let codewordIndex:number = textPosition % codeword.length
     return codewordIndex
 }
 
-export function encryptVigenere(text:string, codeword:string): string{
-    debugger;
-    let textArray = text.split("")
-    let codewordArray = codeword.split("")
-    let killmeArray = textArray.map((e, index) =>{
+function rotatingLetters(textArray:string[], rotations:number[]): string{
+    let outputText:string[] = textArray.map((e, index) =>{
+        let rotation = rotations[index]
+        return encryptCaesar(e, rotation)
     })
+    return outputText.join("")
 }
 
-/*
-export function figureRotation()
-    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
- */
+export function encryptVigenere(text:string, codeword:string): string{
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let textArray:string[] = text.toUpperCase().split("")
+        .filter((e)=>{
+            return alphabet.includes(e)
+        })
+    let codewordArray:string[] = codeword.toUpperCase().split("")
+    let codewordIndexes:number[] = textArray.map((e, index) =>{
+        return indexCodeword(index, codeword)
+    })
+    let codewordLetters:string[] = codewordIndexes.map((e)=>{
+        return codewordArray[e]
+    })
+    let rotations:number[] = codewordLetters.map((e) =>{
+        return alphabet.indexOf(e)
+    })
+    let encrypted:string[] = textArray.map((e, index) =>{
+        let rotation = rotations[index]
+        return encryptCaesar(e, rotation)
+    })
+    return encrypted.join("")
+}
+
+export function decryptVigenere(text:string, codeword:string): string{
+
+}
