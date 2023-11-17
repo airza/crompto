@@ -1,84 +1,66 @@
 import englishSample from "./references/longEnglish.txt"
 import dutchSample from "./references/longDutch.txt"
 import {numberOfDFGCompiles} from "bun:jsc";
+
 export type Frequencies = [string,number][];
-//define decryptCaesar
-//REDO START
+
+const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
 function decryptCaesar(ciphertext: string, rotation: number): string {
-    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    // TODID
-    // string -> characters[]
-    let arrayBlegh:string[] = ciphertext.toUpperCase().split("")
-    // TODID map the characters - apply the transformation to each element or just skip it
-    let transformed = arrayBlegh.map(e=>{
-        debugger;
+    return (ciphertext.toUpperCase().split("").map(e=>{
         if (alphabet.includes(e)){
             return alphabet[(alphabet.indexOf(e) - rotation + alphabet.length) % alphabet.length]
         } else {
             return e
         }
-    })
-    return transformed.join("")
+    }).join(""))
 }
-//define encryptCaesar
+
 export function encryptCaesar(ciphertext:string, rotation:number):string{
     return decryptCaesar(ciphertext,-rotation);
 }
-//define frequencyAnalysis
+
 export function frequencyAnalysis(text: string): Frequencies {
-    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let frequencies: { [key: string]: number } = {};
-    //set starting frequencies to 0ish for all letters
-    for (let letter of alphabet){
+    //setting starting frequency to 0ish for all letters:
+    for (let letter of alphabet) {
         frequencies[letter] = 1e-10;
     }
-    // todid CHANGING SHIT AROUND: split, map, filter, reduce
-    //split
-    let textArray:string[] = text.split("")
-    //map
-    function makeUppercase(e:string):string{
-        return e.toUpperCase()
-    }
-    let allUppercase:string[] = textArray.map(makeUppercase)
-    //filter
-    function isGoodLetter(e:string):boolean {
+    let textArray: string[] = text.toUpperCase().split("").filter((e) => {
         return alphabet.includes(e)
-    }
-    let onlyGoodLetters:string[] = allUppercase.filter(isGoodLetter)
-    //we have a list with all the letters in our frequency table,
-    // now we just need to go through the object we are using to hold them and make it match up, so something like:
-    type FrequencyTable = {
-        [key:string]:number
-    }
-    let letterFrequencies:FrequencyTable = onlyGoodLetters.reduce((currentTable:FrequencyTable,letter:string):FrequencyTable=>{
-        currentTable[letter]++
-        return currentTable
-    }
-    ,frequencies);
-    //now we need to turn this into a probability distribution
-    let freqArray = Object.entries(letterFrequencies)
-    let textLength:number = onlyGoodLetters.length
-    return freqArray.map(e=>{
-        return [e[0], e[1]/textLength]
     })
-    //foreach is like map except instead of returning stuff it doesn't return stuff lol
-} //stop define frequencyAnalysis
-//define sortByFrequency, sortByLetter, klDivergence
+    //constructing our frequency table:
+    type FrequencyTable = {
+        [key: string]: number
+    }
+    let letterFrequencies: FrequencyTable = textArray.reduce((currentTable: FrequencyTable, letter: string): FrequencyTable => {
+            currentTable[letter]++
+            return currentTable
+        }
+        , frequencies);
+    //Turning this into a probability distribution:
+    let textLength: number = textArray.length
+    return Object.entries(letterFrequencies).map(e => {
+        return [e[0], e[1] / textLength]
+    })
+}
+
 function sortByFrequency(frequencies:Frequencies):Frequencies{
     return frequencies.sort((a,b)=>{
         return b[1]-a[1];
     })
 }
+
 function sortByLetter(frequencies:Frequencies):Frequencies{
     return frequencies.sort((a,b)=>{
         return a[0]<b[0]?-1:1;
     })
 }
+
 function klDivergence(freqText: Frequencies, freqRef: Frequencies): number {
     if (freqText.length !== freqRef.length) {
         throw new Error('Distributions must have the same length');
     }
-    //
     let lettersText = freqText.map(e=>e[0]);
     let lettersRef = freqRef.map(e=>e[0])
     if (!lettersText.every((el):boolean=>lettersRef.includes(el))) {
@@ -88,18 +70,16 @@ function klDivergence(freqText: Frequencies, freqRef: Frequencies): number {
     let probsRef = freqRef.map((e) => e[1]);
     let zipped = probsText.map((e, i) => [e, probsRef[i]]);
     let divergence = 0;
-    // todid filter, then reduce
     const filterZipped = zipped.filter((el)=>{
        return el[0]!==0 || el[1]!==0 ;
     })
-    //[[0.1,0.2],[0.3,0.4],...]
     return filterZipped.reduce((divergence:number,currentValue:number[])=>{
         let textProb = currentValue[0];
         let refProb = currentValue[1];
        return divergence + textProb * Math.log(textProb/refProb);
     },0);
 }
-//define decryptByFrequency
+
 export function decryptByFrequency(ciphertext: string, language:"dutch"|"english"): string {
     const referenceText:string = language==="dutch"?dutchSample:englishSample;
     const refFrequencies = sortByLetter(frequencyAnalysis(referenceText));
@@ -116,10 +96,9 @@ export function decryptByFrequency(ciphertext: string, language:"dutch"|"english
             bestRotation = i;
         }
     }
-
     return decryptCaesar(ciphertext, bestRotation);
 }
-//define isDutchOrEnglish
+
 export function isDutchOrEnglish(text:string, isEncryptedCiphertext:boolean,dutchReference:string=dutchSample, englishReference:string=englishSample):"dutch"|"english" {
     let sortingFunction;
     if (isEncryptedCiphertext){
