@@ -1,5 +1,4 @@
 import {encryptCaesar} from "./caesar";
-import {deflateRawSync} from "zlib";
 
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
