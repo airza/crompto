@@ -45,7 +45,7 @@ export function frequencyAnalysis(text: string): Frequencies {
     })
 }
 
-function sortByFrequency(frequencies:Frequencies):Frequencies{
+export function sortByFrequency(frequencies:Frequencies):Frequencies{
     return frequencies.sort((a,b)=>{
         return b[1]-a[1];
     })

@@ -8,11 +8,15 @@ import {
     splitTextCodewordLengthwise,
     prepareText,
     prepareCodeword,
-    calculateCodewordLength
+    calculateCodewordLength, decryptVigenereComplex
 } from "./vigenere.ts"
 import english from "./references/english.txt";
+import simonSingh from "./ciphertexts/vigenere/simonSingh.txt"
+import textttt from "./ciphertexts/vigenere/textttt.txt"
+
 // todo import english from "./references/english.txt";
 // todo import dutch from "./references/dutch.txt";
+// todo SIMON SINGH
 
 console.log("----------------------------------------------------")
 
@@ -102,8 +106,11 @@ test("Splitting the text into all subsets based on codeword length works", ()=> 
     expect(splitTextCodewordLengthwise("OFFYOUGO", 1)).toEqual(["OFFYOUGO"])
 })
 
-//todo actually write this test
 test("Calculating code word length works", ()=>{
-    debugger;
-    expect(calculateCodewordLength(english)).toEqual(["?"])
+    expect(calculateCodewordLength(textttt)).toEqual(7)
+})
+
+//todo actually write this test
+test("Decrypting vigenere with unknown codeword works", ()=>{
+    expect(decryptVigenereComplex(textttt, "english")).toEqual()
 })

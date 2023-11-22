@@ -1,6 +1,7 @@
-import {encryptCaesar, frequencyAnalysis, klDivergence} from "./caesar";
+import {encryptCaesar, frequencyAnalysis, klDivergence, sortByFrequency, decryptByFrequency} from "./caesar";
 import _ from "lodash";
 import englishSample from "./references/longEnglish.txt"
+
 
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -66,16 +67,23 @@ export function splitTextCodewordLengthwise(text:string, codewordLength:number):
     })
 }
 
-//todo freqan takes (text: string): Frequencies //[string,number][]
-//todo KLBITCH takes (freqText: Frequencies, freqRef: Frequencies): number
-
 export function calculateCodewordLength(text:string, maximumLength:number=20, referenceEnglish:string=englishSample):number{
-    let referenceFrequenciesEnglish = frequencyAnalysis(referenceEnglish)
-    let HELLO = _.range(2, maximumLength+1).map(e=> {                              //outputs [Frequencies][]
-        return splitTextCodewordLengthwise(text, e).map(el => {                        //outputs Frequencies[]
-            return klDivergence(frequencyAnalysis(el), referenceFrequenciesEnglish)    //outputs number for every
-        })
-    });
-    debugger;
-    return 4;
+    let referenceFrequenciesEnglish = sortByFrequency(frequencyAnalysis(referenceEnglish))
+    let means = _.range(2, maximumLength+1).map(e=> {
+        let meanKld = _.mean(splitTextCodewordLengthwise(text, e).map(el => {
+            return klDivergence(sortByFrequency(frequencyAnalysis(el)), referenceFrequenciesEnglish)
+        }));
+        return {meanKld, length:e}
+    })
+    let meanBest = _.minBy(means, o=>o.meanKld)
+    return meanBest?.length ?? -1
+}
+
+export function decryptVigenereComplex(text:string, language:"dutch"|"english", maximumLength:number=20, referenceEnglish:string=englishSample):string{
+    //Execute caesar cipher on each boi
+    let zippeeee = splitTextCodewordLengthwise(text, calculateCodewordLength(text)).map(e =>{
+        return decryptByFrequency(e, language).split("")
+    })
+    _.unzip(zippeeee)
+    //todo put them back together with (un)zip
 }
