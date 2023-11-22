@@ -1,5 +1,16 @@
 import { expect, test } from "bun:test";
-import {decryptVigenereSimple, encryptVigenere, getEncryptRotations, splitTextCodeletterwise, rotatingLetters, splitTextCodewordwise, prepareText, prepareCodeword} from "./vigenere.ts"
+import {
+    decryptVigenereSimple,
+    encryptVigenere,
+    getEncryptRotations,
+    splitTextCodeletterwise,
+    rotatingLetters,
+    splitTextCodewordLengthwise,
+    prepareText,
+    prepareCodeword,
+    calculateCodewordLength
+} from "./vigenere.ts"
+import english from "./references/english.txt";
 // todo import english from "./references/english.txt";
 // todo import dutch from "./references/dutch.txt";
 
@@ -82,17 +93,17 @@ test("Splitting the text into a single subset based on one codeword character co
     expect(splitTextCodeletterwise("OFFYOUGO", 10, 0)).toEqual("O")
 })
 
-test("Splitting the text into all subsets based on full codeword works", ()=> {
-    expect(splitTextCodewordwise("OFFYOUGO", "CODEWORD")).toEqual(["O", "F", "F", "Y", "O", "U", "G", "O"])
-    expect(splitTextCodewordwise("OFF YOU GO", "CODEWORD")).toEqual(["O", "F", "F", "Y", "O", "U", "G", "O"])
-    expect(splitTextCodewordwise("OFF YOU GO!", "CODEWO")).toEqual(["OG", "FO", "F", "Y", "O", "U"])
-    expect(splitTextCodewordwise("off you go!", "CODE")).toEqual(["OO", "FU", "FG", "YO"])
-    expect(splitTextCodewordwise("OFFYOUGO", "CODE WORD")).toEqual(["O", "F", "F", "Y", "O", "U", "G", "O"])
-    expect(splitTextCodewordwise("OFFYOUGO", "code word")).toEqual(["O", "F", "F", "Y", "O", "U", "G", "O"])
-    expect(() => {
-        splitTextCodewordwise("OFFYOUGO", "CODE WORD!")
-    }).toThrow('evil')
-    expect(() => {
-        splitTextCodewordwise("OFFYOUGO", "C")
-    }).toThrow('caesar')
+test("Splitting the text into all subsets based on codeword length works", ()=> {
+    expect(splitTextCodewordLengthwise("OFFYOUGO", 8)).toEqual(["O", "F", "F", "Y", "O", "U", "G", "O"])
+    expect(splitTextCodewordLengthwise("OFF YOU GO", 8)).toEqual(["O", "F", "F", "Y", "O", "U", "G", "O"])
+    expect(splitTextCodewordLengthwise("OFF YOU GO!", 6)).toEqual(["OG", "FO", "F", "Y", "O", "U"])
+    expect(splitTextCodewordLengthwise("off you go!", 4)).toEqual(["OO", "FU", "FG", "YO"])
+    //doesn't throw for caesar bc doesn't call on prepareCodeword
+    expect(splitTextCodewordLengthwise("OFFYOUGO", 1)).toEqual(["OFFYOUGO"])
+})
+
+//todo actually write this test
+test("Calculating code word length works", ()=>{
+    debugger;
+    expect(calculateCodewordLength(english)).toEqual(["?"])
 })

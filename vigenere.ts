@@ -1,5 +1,6 @@
-import {encryptCaesar} from "./caesar";
-import {deflateRawSync} from "zlib";
+import {encryptCaesar, frequencyAnalysis, klDivergence} from "./caesar";
+import _ from "lodash";
+import englishSample from "./references/longEnglish.txt"
 
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -59,10 +60,22 @@ export function splitTextCodeletterwise(text:string, codewordLength:number, offs
     .join(""))
 }
 
-export function splitTextCodewordwise(text:string, codeword:string):string[]{
-    return prepareCodeword(codeword).map((e, i)=>{
-        return splitTextCodeletterwise(text.toUpperCase(), prepareCodeword(codeword).join("").length, i)
+export function splitTextCodewordLengthwise(text:string, codewordLength:number):string[]{
+    return _.range(codewordLength).map(e=>{
+        return splitTextCodeletterwise(text.toUpperCase(), codewordLength, e)
     })
 }
 
-//todo KLBITCH
+//todo freqan takes (text: string): Frequencies //[string,number][]
+//todo KLBITCH takes (freqText: Frequencies, freqRef: Frequencies): number
+
+export function calculateCodewordLength(text:string, maximumLength:number=20, referenceEnglish:string=englishSample):number{
+    let referenceFrequenciesEnglish = frequencyAnalysis(referenceEnglish)
+    let HELLO = _.range(2, maximumLength+1).map(e=> {                              //outputs [Frequencies][]
+        return splitTextCodewordLengthwise(text, e).map(el => {                        //outputs Frequencies[]
+            return klDivergence(frequencyAnalysis(el), referenceFrequenciesEnglish)    //outputs number for every
+        })
+    });
+    debugger;
+    return 4;
+}

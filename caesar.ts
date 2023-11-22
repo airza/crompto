@@ -57,7 +57,7 @@ function sortByLetter(frequencies:Frequencies):Frequencies{
     })
 }
 
-function klDivergence(freqText: Frequencies, freqRef: Frequencies): number {
+export function klDivergence(freqText: Frequencies, freqRef: Frequencies): number {
     if (freqText.length !== freqRef.length) {
         throw new Error('Distributions must have the same length');
     }
