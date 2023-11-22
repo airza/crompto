@@ -6,7 +6,7 @@ import englishSample from "./references/longEnglish.txt"
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 //todo somehow return punctuation to decrypted text? save & reconstruct from indexes?
-//todo KLBITCh
+//todo output codeword also?
 
 export function prepareText(text:string):string[]{
     return text.toUpperCase().split("").filter((e)=>{
@@ -81,9 +81,10 @@ export function calculateCodewordLength(text:string, maximumLength:number=20, re
 
 export function decryptVigenereComplex(text:string, language:"dutch"|"english", maximumLength:number=20, referenceEnglish:string=englishSample):string{
     //Execute caesar cipher on each boi
-    let zippeeee = splitTextCodewordLengthwise(text, calculateCodewordLength(text)).map(e =>{
+    let zipped:string[][] = splitTextCodewordLengthwise(text, calculateCodewordLength(text)).map(e =>{
         return decryptByFrequency(e, language).split("")
     })
-    _.unzip(zippeeee)
-    //todo put them back together with (un)zip
+    let unzipped = _.flattenDeep(_.unzip(zipped)).join("")
+    console.log(unzipped)
+    return unzipped
 }
